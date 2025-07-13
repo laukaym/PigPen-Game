@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pigpen Princess Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #d63384;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      margin-top: 30px;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .item, .target {
+      padding: 15px;
+      border: 2px dashed #aaa;
+      cursor: pointer;
+      border-radius: 10px;
+      background-color: #fff0f5;
+    }
+    .matched {
+      background-color: #c3fbd8;
+      border-color: #28a745;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Match the Princess to Her Pigpen Cipher!</h1>
+
+<div class="container">
+  <div class="column" id="names">
+    <div class="item" draggable="true" data-name="Ariel">Ariel</div>
+    <div class="item" draggable="true" data-name="Belle">Belle</div>
+    <div class="item" draggable="true" data-name="Jasmine">Jasmine</div>
+  </div>
+
+  <div class="column" id="ciphers">
+    <div class="target" data-name="Belle">🔺⚫🔲🔳 (Belle Cipher)</div>
+    <div class="target" data-name="Ariel">⬛⬜🔶🔷 (Ariel Cipher)</div>
+    <div class="target" data-name="Jasmine">🔻🔹🔸⚪ (Jasmine Cipher)</div>
+  </div>
+</div>
+
+<script>
+  const items = document.querySelectorAll('.item');
+  const targets = document.querySelectorAll('.target');
+
+  items.forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', item.dataset.name);
+    });
+  });
+
+  targets.forEach(target => {
+    target.addEventListener('dragover', (e) => e.preventDefault());
+
+    target.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const draggedName = e.dataTransfer.getData('text/plain');
+      const correctName = target.dataset.name;
+      if (draggedName === correctName) {
+        target.classList.add('matched');
+        target.innerText += ` ← ${draggedName}`;
+        const draggedItem = [...items].find(i => i.dataset.name === draggedName);
+        draggedItem.style.display = 'none';
+      } else {
+        alert("That's not the correct match!");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
