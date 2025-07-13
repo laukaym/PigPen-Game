@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Pigpen Cipher Princess Match</title>
   <style>
     body {
@@ -14,36 +14,46 @@
       color: #b83280;
       margin-bottom: 30px;
     }
-    .container {
+    .game-container {
       display: flex;
       justify-content: center;
       gap: 80px;
-      flex-wrap: wrap;
+      max-width: 900px;
+      margin: auto;
     }
     .column {
       display: flex;
       flex-direction: column;
       gap: 20px;
-      width: 250px;
+      width: 300px;
     }
     .princess {
       background: #ffe3f1;
       border: 2px dashed #b83280;
       border-radius: 12px;
       padding: 15px;
-      font-size: 1.2em;
+      font-size: 1.1em;
       cursor: grab;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
     }
     .cipher {
       border: 3px solid #ddd;
       padding: 10px;
       border-radius: 10px;
       background: #fff;
-      min-height: 100px;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: 0.2s;
     }
     .cipher img {
       max-width: 100%;
+      max-height: 60px;
     }
     .matched {
       border-color: #28a745;
@@ -55,23 +65,25 @@
 
 <h1>Match the Princess to Her Pigpen Cipher!</h1>
 
-<div class="container">
+<div class="game-container">
+  <!-- Left Column: Princess Names -->
   <div class="column" id="names">
     <div class="princess" draggable="true" data-name="Ariel">Princess Ariel</div>
     <div class="princess" draggable="true" data-name="Belle">Princess Belle</div>
     <div class="princess" draggable="true" data-name="Jasmine">Princess Jasmine</div>
+    <div class="princess" draggable="true" data-name="Cinderella">Princess Cinderella</div>
+    <div class="princess" draggable="true" data-name="Tiana">Princess Tiana</div>
+    <div class="princess" draggable="true" data-name="Rapunzel">Princess Rapunzel</div>
   </div>
 
+  <!-- Right Column: Pigpen Cipher Images -->
   <div class="column" id="ciphers">
-    <div class="cipher" data-name="Belle">
-      <img src="belle.png" alt="Pigpen cipher of Belle">
-    </div>
-    <div class="cipher" data-name="Ariel">
-      <img src="ariel.png" alt="Pigpen cipher of Ariel">
-    </div>
-    <div class="cipher" data-name="Jasmine">
-      <img src="jasmine.png" alt="Pigpen cipher of Jasmine">
-    </div>
+    <div class="cipher" data-name="Ariel"><img src="ariel.png" alt="Ariel Pigpen Cipher"></div>
+    <div class="cipher" data-name="Belle"><img src="belle.png" alt="Belle Pigpen Cipher"></div>
+    <div class="cipher" data-name="Jasmine"><img src="jasmine.png" alt="Jasmine Pigpen Cipher"></div>
+    <div class="cipher" data-name="Cinderella"><img src="cinderella.png" alt="Cinderella Pigpen Cipher"></div>
+    <div class="cipher" data-name="Tiana"><img src="tiana.png" alt="Tiana Pigpen Cipher"></div>
+    <div class="cipher" data-name="Rapunzel"><img src="rapunzel.png" alt="Rapunzel Pigpen Cipher"></div>
   </div>
 </div>
 
@@ -87,17 +99,19 @@
 
   ciphers.forEach(cipher => {
     cipher.addEventListener('dragover', (e) => e.preventDefault());
+
     cipher.addEventListener('drop', (e) => {
       e.preventDefault();
       const draggedName = e.dataTransfer.getData('text/plain');
       const correctName = cipher.dataset.name;
+
       if (draggedName === correctName) {
         cipher.classList.add('matched');
-        cipher.innerHTML += `<div><strong>${draggedName}</strong> matched!</div>`;
+        cipher.innerHTML += `<div><strong>${draggedName} matched!</strong></div>`;
         const draggedElement = [...princesses].find(p => p.dataset.name === draggedName);
-        draggedElement.style.display = 'none';
+        if (draggedElement) draggedElement.style.display = 'none';
       } else {
-        alert("Wrong match! Try again.");
+        alert("That's not the right match. Try again!");
       }
     });
   });
