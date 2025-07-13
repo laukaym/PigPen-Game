@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pigpen Cipher Princess Match</title>
+  <style>
+    body {
+      background-color: #fff0f6;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #b83280;
+      margin-bottom: 30px;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      flex-wrap: wrap;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 250px;
+    }
+    .princess {
+      background: #ffe3f1;
+      border: 2px dashed #b83280;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 1.2em;
+      cursor: grab;
+    }
+    .cipher {
+      border: 3px solid #ddd;
+      padding: 10px;
+      border-radius: 10px;
+      background: #fff;
+      min-height: 100px;
+      transition: 0.2s;
+    }
+    .cipher img {
+      max-width: 100%;
+    }
+    .matched {
+      border-color: #28a745;
+      background-color: #d4edda;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Match the Princess to Her Pigpen Cipher!</h1>
+
+<div class="container">
+  <div class="column" id="names">
+    <div class="princess" draggable="true" data-name="Ariel">Princess Ariel</div>
+    <div class="princess" draggable="true" data-name="Belle">Princess Belle</div>
+    <div class="princess" draggable="true" data-name="Jasmine">Princess Jasmine</div>
+  </div>
+
+  <div class="column" id="ciphers">
+    <div class="cipher" data-name="Belle">
+      <img src="belle.png" alt="Pigpen cipher of Belle">
+    </div>
+    <div class="cipher" data-name="Ariel">
+      <img src="ariel.png" alt="Pigpen cipher of Ariel">
+    </div>
+    <div class="cipher" data-name="Jasmine">
+      <img src="jasmine.png" alt="Pigpen cipher of Jasmine">
+    </div>
+  </div>
+</div>
+
+<script>
+  const princesses = document.querySelectorAll('.princess');
+  const ciphers = document.querySelectorAll('.cipher');
+
+  princesses.forEach(princess => {
+    princess.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', princess.dataset.name);
+    });
+  });
+
+  ciphers.forEach(cipher => {
+    cipher.addEventListener('dragover', (e) => e.preventDefault());
+    cipher.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const draggedName = e.dataTransfer.getData('text/plain');
+      const correctName = cipher.dataset.name;
+      if (draggedName === correctName) {
+        cipher.classList.add('matched');
+        cipher.innerHTML += `<div><strong>${draggedName}</strong> matched!</div>`;
+        const draggedElement = [...princesses].find(p => p.dataset.name === draggedName);
+        draggedElement.style.display = 'none';
+      } else {
+        alert("Wrong match! Try again.");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
