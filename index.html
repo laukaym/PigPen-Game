@@ -33,7 +33,7 @@
       border-radius: 12px;
       padding: 15px;
       font-size: 1.1em;
-      cursor: grab;
+      cursor: pointer;
       min-height: 60px;
       display: flex;
       align-items: center;
@@ -59,6 +59,10 @@
       border-color: #28a745;
       background-color: #d4edda;
     }
+    .selected {
+      background-color: #ffcce6;
+      border-color: #ff69b4;
+    }
   </style>
 </head>
 <body>
@@ -68,12 +72,12 @@
 <div class="game-container">
   <!-- Left Column: Princess Names -->
   <div class="column" id="names">
-    <div class="princess" draggable="true" data-name="Ariel">Princess Ariel</div>
-    <div class="princess" draggable="true" data-name="Belle">Princess Belle</div>
-    <div class="princess" draggable="true" data-name="Jasmine">Princess Jasmine</div>
-    <div class="princess" draggable="true" data-name="Cinderella">Princess Cinderella</div>
-    <div class="princess" draggable="true" data-name="Tiana">Princess Tiana</div>
-    <div class="princess" draggable="true" data-name="Rapunzel">Princess Rapunzel</div>
+    <div class="princess" data-name="Ariel">Princess Ariel</div>
+    <div class="princess" data-name="Belle">Princess Belle</div>
+    <div class="princess" data-name="Jasmine">Princess Jasmine</div>
+    <div class="princess" data-name="Cinderella">Princess Cinderella</div>
+    <div class="princess" data-name="Tiana">Princess Tiana</div>
+    <div class="princess" data-name="Rapunzel">Princess Rapunzel</div>
   </div>
 
   <!-- Right Column: Pigpen Cipher Images -->
@@ -88,28 +92,37 @@
 </div>
 
 <script>
+  let selectedPrincess = null;
+
   const princesses = document.querySelectorAll('.princess');
   const ciphers = document.querySelectorAll('.cipher');
 
   princesses.forEach(princess => {
-    princess.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', princess.dataset.name);
+    princess.addEventListener('click', () => {
+      // Deselect others
+      princesses.forEach(p => p.classList.remove('selected'));
+      // Select this one
+      princess.classList.add('selected');
+      selectedPrincess = princess;
     });
   });
 
   ciphers.forEach(cipher => {
-    cipher.addEventListener('dragover', (e) => e.preventDefault());
+    cipher.addEventListener('click', () => {
+      if (!selectedPrincess) {
+        alert("Select a princess first!");
+        return;
+      }
 
-    cipher.addEventListener('drop', (e) => {
-      e.preventDefault();
-      const draggedName = e.dataTransfer.getData('text/plain');
-      const correctName = cipher.dataset.name;
+      const princessName = selectedPrincess.dataset.name;
+      const cipherName = cipher.dataset.name;
 
-      if (draggedName === correctName) {
+      if (princessName === cipherName) {
         cipher.classList.add('matched');
-        cipher.innerHTML += `<div><strong>${draggedName} matched!</strong></div>`;
-        const draggedElement = [...princesses].find(p => p.dataset.name === draggedName);
-        if (draggedElement) draggedElement.style.display = 'none';
+        cipher.innerHTML += `<div><strong>${princessName} matched!</strong></div>`;
+        selectedPrincess.style.display = 'none';
+        selectedPrincess = null;
+        princesses.forEach(p => p.classList.remove('selected'));
       } else {
         alert("That's not the right match. Try again!");
       }
